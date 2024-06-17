@@ -13,4 +13,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong", message: err.message });
 });
 
-module.exports = serverless(app);
+module.exports.handler = serverless(app);
