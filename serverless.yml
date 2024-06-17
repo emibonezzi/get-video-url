@@ -8,6 +8,7 @@ provider:
 functions:
   app:
     handler: index.handler
+    memorySize: 10240 # Set the memory allocation
     events:
       - http:
           path: /api/get-url
