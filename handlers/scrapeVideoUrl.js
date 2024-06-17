@@ -11,6 +11,7 @@ module.exports = async function (req, res, next) {
   });
   const page = await browser.newPage();
   try {
+    await page.waitForSelector("video");
     await page.goto(req.body.url);
     // localize video tag and extract src link
     const videoUrl = await page.$eval("video", (el) => el.src);
