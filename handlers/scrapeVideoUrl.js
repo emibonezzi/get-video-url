@@ -1,4 +1,10 @@
-const puppeteer = require("puppeteer-core");
+// puppeteer-extra is a drop-in replacement for puppeteer,
+// it augments the installed puppeteer with plugin functionality
+const puppeteer = require("puppeteer-extra");
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
 const chromium = require("@sparticuz/chromium");
 
 module.exports = async function (req, res, next) {
@@ -11,10 +17,16 @@ module.exports = async function (req, res, next) {
   });
   const page = await browser.newPage();
   try {
-    await page.waitForSelector("video");
     await page.goto(req.body.url);
+    await page.waitForSelector("video");
     // localize video tag and extract src link
-    const videoUrl = await page.$eval("video", (el) => el.src);
+    let videoUrl = await page.$eval("video", (el) => el.src);
+
+    // if video.src is not found search for source element
+    if (!videoUrl) {
+      videoUrl = await page.$eval("source", (el) => el.src);
+    }
+
     res.json({ original_url: req.body.url, video_url: videoUrl });
   } catch (err) {
     next(err);

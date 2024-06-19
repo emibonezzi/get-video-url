@@ -9,6 +9,7 @@ functions:
   app:
     handler: index.handler
     memorySize: 10240 # Set the memory allocation
+    timeout: 30
     events:
       - http:
           path: /api/get-url
